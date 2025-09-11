@@ -1,4 +1,7 @@
 # TheGIVFoundation
+
+
+
 https://chatgpt.com/s/t_68b6ef88b6ec8191adab0fdfa0fa134d
 Perfect, Beverly. We’ll go with the simpler, high-resolution PNGs for immediate use. That way, your Substack post can launch quickly without worrying about edits for now.
 
@@ -6,7 +9,7 @@ Here’s the plan for the graphics:
 
 ⸻
 
-Visual 1: Fraud Ecosystem Map (PNG)
+Visual 1: anti-Fraud Ecosystem Map (PNG)
 	•	Center Node: Individual / Household
 	•	Layers:
 	•	Layer 1: Banks (online & local), Credit Networks (Amex, Visa, Mastercard), Credit Unions, Mortgage Brokers
