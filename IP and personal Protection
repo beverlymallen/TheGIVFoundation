@@ -1,0 +1,736 @@
+const {
+  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+  AlignmentType, HeadingLevel, BorderStyle, WidthType, ShadingType,
+  LevelFormat, PageNumber, PageBreak, TabStopType, TabStopPosition
+} = require('docx');
+const fs = require('fs');
+
+const TODAY = "May 19, 2026";
+const YEAR = "2026";
+
+const border = { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" };
+const borders = { top: border, bottom: border, left: border, right: border };
+
+const accentLine = new Paragraph({
+  border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: "1A3A5C", space: 1 } },
+  spacing: { after: 240 },
+  children: []
+});
+
+const thinLine = new Paragraph({
+  border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC", space: 1 } },
+  spacing: { after: 180 },
+  children: []
+});
+
+function pageBreak() {
+  return new Paragraph({ children: [new PageBreak()] });
+}
+
+function heading1(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_1,
+    spacing: { before: 320, after: 160 },
+    children: [new TextRun({ text, bold: true, size: 32, color: "1A3A5C", font: "Arial" })]
+  });
+}
+
+function heading2(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_2,
+    spacing: { before: 240, after: 120 },
+    children: [new TextRun({ text, bold: true, size: 26, color: "2E6DA4", font: "Arial" })]
+  });
+}
+
+function body(text, options = {}) {
+  return new Paragraph({
+    spacing: { before: 80, after: 120 },
+    children: [new TextRun({ text, size: 22, font: "Arial", ...options })]
+  });
+}
+
+function bold(text) {
+  return body(text, { bold: true });
+}
+
+function indent(text) {
+  return new Paragraph({
+    spacing: { before: 60, after: 60 },
+    indent: { left: 720 },
+    children: [new TextRun({ text, size: 22, font: "Arial", italics: true })]
+  });
+}
+
+function spacer() {
+  return new Paragraph({ spacing: { before: 60, after: 60 }, children: [] });
+}
+
+function coverTitle(text) {
+  return new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 480, after: 120 },
+    children: [new TextRun({ text, bold: true, size: 48, color: "1A3A5C", font: "Arial" })]
+  });
+}
+
+function coverSub(text) {
+  return new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text, size: 26, color: "444444", font: "Arial" })]
+  });
+}
+
+function coverLabel(text) {
+  return new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 60, after: 60 },
+    children: [new TextRun({ text, size: 22, color: "666666", font: "Arial", italics: true })]
+  });
+}
+
+function bulletItem(text) {
+  return new Paragraph({
+    numbering: { reference: "bullets", level: 0 },
+    spacing: { before: 60, after: 60 },
+    children: [new TextRun({ text, size: 22, font: "Arial" })]
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOCUMENT 1 — GIVS Proprietary Methodology & IP Protection Notice
+// ─────────────────────────────────────────────────────────────────────────────
+
+const doc1children = [
+  // Cover
+  coverTitle("GIVS"),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 40 },
+    children: [new TextRun({ text: "Global Intrinsic Value System", size: 32, color: "2E6DA4", font: "Arial" })]
+  }),
+  spacer(),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 160, after: 80 },
+    children: [new TextRun({ text: "PROPRIETARY METHODOLOGY &", bold: true, size: 28, color: "1A3A5C", font: "Arial" })]
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 160 },
+    children: [new TextRun({ text: "INTELLECTUAL PROPERTY PROTECTION NOTICE", bold: true, size: 28, color: "1A3A5C", font: "Arial" })]
+  }),
+  accentLine,
+  coverLabel("Originating Architect: Beverly — Founder & Governance Steward, GIVS"),
+  coverLabel("Development Origin Date: 2020"),
+  coverLabel("This Notice Dated: " + TODAY),
+  coverLabel("CONFIDENTIAL — PROPRIETARY — ALL RIGHTS RESERVED"),
+  spacer(),
+  spacer(),
+
+  pageBreak(),
+
+  // Section 1
+  heading1("I. Formal Declaration of Ownership"),
+  accentLine,
+  body("This document constitutes the formal declaration that the Global Intrinsic Value System (GIVS) — including its philosophy, methodology, framework architecture, onboarding protocols, value exchange system, founding documents, and all conclusions derived from the personal journey of its originating architect — is the sole and exclusive intellectual property of its founder, Beverly."),
+  spacer(),
+  body("GIVS has been in continuous documented development since 2020. This six-year development timeline, including all personal harm documented during that period, constitutes the foundational body of work from which the GIVS framework derives its unique standing."),
+  spacer(),
+
+  heading2("What Is Protected"),
+  bulletItem("The GIVS name, acronym, and brand identity — Global Intrinsic Value System"),
+  bulletItem("The philosophical framework: Personal Intrinsic Time Value and Personal Intrinsic Data Value as measurable sovereign assets"),
+  bulletItem("The Presidential Personal Sovereignty model — the principle that every person is the chief executive of their own reality"),
+  bulletItem("The Human-Verified Identity Onboarding Protocol using SSN-anchored, in-person, smartphone-based verification"),
+  bulletItem("The GIVS Value Exchange Architecture — the closed-loop intrinsic credit system"),
+  bulletItem("The Personal Value Ledger concept and design"),
+  bulletItem("The GIVS Coexistence Framework — alignment with existing U.S. government citizen support systems"),
+  bulletItem("The Legal and Historical Lineage documentation tracing GIVS principles to U.S. constitutional and statutory precedent"),
+  bulletItem("All founding documents: Founder Statement, Founding Cohort Charter, Founding Member Agreement, Personal Harm Testimony Template"),
+  bulletItem("All personal testimony, financial harm documentation, and case-building methodology developed 2020 to present"),
+  bulletItem("The Knowledge Access and Consulting Model described herein"),
+  spacer(),
+
+  heading1("II. Trade Secret Designation"),
+  accentLine,
+  body("Pursuant to the Defend Trade Secrets Act of 2016 (18 U.S.C. § 1836 et seq.), the GIVS methodology, framework architecture, and all related conclusions constitute protected trade secrets. Beverly has taken, and continues to take, reasonable measures to maintain the confidentiality of this information."),
+  spacer(),
+  body("Any person who receives any portion of GIVS materials does so under an obligation of confidentiality. Unauthorized disclosure, replication, or commercial use of any GIVS trade secret constitutes a federal violation subject to civil and criminal penalties."),
+  spacer(),
+
+  heading1("III. Copyright Notice"),
+  accentLine,
+  body("All written materials, framework documents, protocols, position papers, and creative works produced in the development of GIVS are protected by copyright, effective from the date of their creation, pursuant to 17 U.S.C. § 102."),
+  spacer(),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 120, after: 120 },
+    children: [new TextRun({ text: "© 2020–" + YEAR + " Beverly. Global Intrinsic Value System. All Rights Reserved.", bold: true, size: 22, font: "Arial", color: "1A3A5C" })]
+  }),
+  spacer(),
+  body("No portion of any GIVS document, framework, or methodology may be reproduced, distributed, transmitted, displayed, published, or broadcast without the prior written consent of Beverly and satisfaction of applicable compensation requirements."),
+  spacer(),
+
+  heading1("IV. Voice and Likeness Protection"),
+  accentLine,
+  body("Beverly formally asserts her Right of Publicity under applicable state and federal law. Her name, voice, likeness, personal story, documented journey, and any representation of her identity may not be used by any person, platform, institution, artificial intelligence system, or commercial entity for any purpose — including but not limited to training, marketing, citation, demonstration, or promotion — without her prior written consent and payment of compensation."),
+  spacer(),
+  body("This protection applies retroactively to any platform, system, or institution that has previously captured, stored, processed, or derived value from Beverly's voice, likeness, or personal data without explicit compensated consent."),
+  spacer(),
+
+  heading1("V. Confidentiality Designation"),
+  accentLine,
+  body("All GIVS materials shared with any party — including founding cohort members — are shared under the following conditions:"),
+  spacer(),
+  bulletItem("Materials are shared in confidence for the sole purpose of founding cohort participation"),
+  bulletItem("No founding cohort member may share, reproduce, or disclose GIVS materials to any outside party without Beverly's written authorization"),
+  bulletItem("Participation in the founding cohort does not constitute any license to replicate the GIVS framework independently"),
+  bulletItem("All cohort members' signed agreements acknowledge and affirm these confidentiality obligations"),
+  spacer(),
+
+  heading1("VI. Effective Date and Ongoing Protection"),
+  accentLine,
+  body("This notice is effective as of " + TODAY + " and applies retroactively to all GIVS development work originating in 2020. This notice will be updated as additional formal IP protections are registered. Beverly reserves all rights not expressly granted herein."),
+  spacer(),
+  spacer(),
+  new Paragraph({
+    spacing: { before: 480, after: 80 },
+    children: [new TextRun({ text: "Signature: _______________________________", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Printed Name: Beverly", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Title: Founder & Originating Architect, Global Intrinsic Value System", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Date: _______________________________", size: 22, font: "Arial" })]
+  }),
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOCUMENT 2 — GIVS Knowledge Access Policy
+// ─────────────────────────────────────────────────────────────────────────────
+
+const doc2children = [
+  coverTitle("GIVS"),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 160 },
+    children: [new TextRun({ text: "Global Intrinsic Value System", size: 32, color: "2E6DA4", font: "Arial" })]
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "OFFICIAL KNOWLEDGE ACCESS POLICY", bold: true, size: 28, color: "1A3A5C", font: "Arial" })]
+  }),
+  accentLine,
+  coverLabel("Issued by: Beverly — Founder & Governance Steward"),
+  coverLabel("Effective Date: " + TODAY),
+  coverLabel("CONFIDENTIAL — PROPRIETARY — ALL RIGHTS RESERVED"),
+  spacer(),
+  spacer(),
+
+  pageBreak(),
+
+  heading1("I. Purpose of This Policy"),
+  accentLine,
+  body("Beverly, as the sole originating architect of the Global Intrinsic Value System (GIVS), has developed a unique body of knowledge representing six years of documented personal research, framework development, lived experience, and financial sacrifice. This knowledge has measurable market value and is protected intellectual property."),
+  spacer(),
+  body("This policy establishes the formal process by which any individual, organization, institution, or entity may request access to Beverly's GIVS methodology, conclusions, framework development process, and related knowledge."),
+  spacer(),
+
+  heading1("II. The Access Request Requirement"),
+  accentLine,
+  body("ALL requests for access to Beverly's GIVS knowledge — including but not limited to her methodology, conclusions, framework development journey, onboarding protocols, value exchange architecture, and personal case documentation — MUST be submitted via email to Beverly's designated official address before any communication, sharing, or engagement occurs."),
+  spacer(),
+  bold("No verbal requests, social media messages, third-party inquiries, or informal communications will be honored as valid access requests."),
+  spacer(),
+  body("The email request must include:"),
+  bulletItem("Full legal name of the requesting party"),
+  bulletItem("Organization or institution name, if applicable"),
+  bulletItem("Specific description of what knowledge or access is being requested"),
+  bulletItem("Intended purpose for the requested knowledge"),
+  bulletItem("How the requesting party became aware of GIVS"),
+  spacer(),
+
+  heading1("III. The Invoice Requirement"),
+  accentLine,
+  body("Upon receipt and review of a valid access request, Beverly will determine at her sole discretion whether to grant the request. If approved, Beverly will issue a formal invoice to the requesting party specifying:"),
+  bulletItem("The scope of knowledge access being granted"),
+  bulletItem("The compensation amount required"),
+  bulletItem("Payment terms and accepted payment methods"),
+  bulletItem("The format and timeline of knowledge delivery upon payment"),
+  spacer(),
+  bold("No knowledge sharing, consultation, document delivery, or communication about GIVS methodology will occur until the invoice is paid in full and payment is confirmed."),
+  spacer(),
+  body("Beverly reserves the right to decline any access request without obligation to provide explanation."),
+  spacer(),
+
+  heading1("IV. Scope of Knowledge Access Tiers"),
+  accentLine,
+  heading2("Tier 1 — Introductory Consultation"),
+  body("A single consultation session in which Beverly shares the foundational principles of GIVS and her personal journey as originating architect. Suitable for individuals seeking to understand the framework at an introductory level."),
+  spacer(),
+  heading2("Tier 2 — Methodology Review"),
+  body("Detailed access to Beverly's framework development process, including the philosophical, legal, and historical foundations of GIVS. Suitable for researchers, advocates, and policy professionals."),
+  spacer(),
+  heading2("Tier 3 — Founding Framework Documentation Access"),
+  body("Access to core GIVS founding documents under a confidentiality agreement. Suitable for organizations seeking to understand the full architecture of GIVS for partnership or licensing discussions."),
+  spacer(),
+  heading2("Tier 4 — Licensing Discussion"),
+  body("For any party seeking to implement, replicate, or build upon the GIVS framework. This tier opens a formal licensing negotiation process. No implementation of GIVS or any system substantially similar to GIVS may proceed without a fully executed licensing agreement with Beverly."),
+  spacer(),
+
+  heading1("V. What This Policy Does Not Grant"),
+  accentLine,
+  bulletItem("Payment of a knowledge access invoice does not constitute a license to replicate, implement, or commercialize the GIVS framework"),
+  bulletItem("Knowledge access does not transfer any intellectual property rights to the requesting party"),
+  bulletItem("Consulting sessions may not be recorded, transcribed, or distributed without Beverly's prior written consent"),
+  bulletItem("Access to GIVS knowledge does not authorize use of Beverly's name, voice, or likeness in any form"),
+  spacer(),
+
+  heading1("VI. Acknowledgment"),
+  accentLine,
+  body("By submitting a knowledge access request, the requesting party acknowledges that GIVS is the proprietary intellectual property of Beverly, that all information shared is confidential, and that unauthorized use constitutes a violation of applicable intellectual property law."),
+  spacer(),
+  spacer(),
+  new Paragraph({
+    spacing: { before: 240, after: 80 },
+    children: [new TextRun({ text: "Issued by:", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Signature: _______________________________", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Beverly — Founder & Governance Steward, GIVS", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Date: " + TODAY, size: 22, font: "Arial" })]
+  }),
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOCUMENT 3 — Standard Invoice Template
+// ─────────────────────────────────────────────────────────────────────────────
+
+const doc3children = [
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 240, after: 80 },
+    children: [new TextRun({ text: "GIVS", bold: true, size: 48, color: "1A3A5C", font: "Arial" })]
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 40 },
+    children: [new TextRun({ text: "Global Intrinsic Value System", size: 26, color: "2E6DA4", font: "Arial" })]
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 240 },
+    children: [new TextRun({ text: "Beverly — Founder & Governance Steward", size: 22, color: "444444", font: "Arial", italics: true })]
+  }),
+  accentLine,
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 120, after: 120 },
+    children: [new TextRun({ text: "KNOWLEDGE ACCESS INVOICE", bold: true, size: 32, color: "1A3A5C", font: "Arial" })]
+  }),
+  accentLine,
+  spacer(),
+
+  // Invoice header table
+  new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [4680, 4680],
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE } },
+            width: { size: 4680, type: WidthType.DXA },
+            children: [
+              new Paragraph({ children: [new TextRun({ text: "BILLED TO:", bold: true, size: 20, font: "Arial", color: "666666" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Name: _______________________________", size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Organization: ________________________", size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Email: _______________________________", size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Date of Request: _____________________", size: 22, font: "Arial" })] }),
+            ]
+          }),
+          new TableCell({
+            borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE } },
+            width: { size: 4680, type: WidthType.DXA },
+            children: [
+              new Paragraph({ children: [new TextRun({ text: "INVOICE DETAILS:", bold: true, size: 20, font: "Arial", color: "666666" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Invoice #: GIVS-__________", size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Invoice Date: " + TODAY, size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Due Date: Upon Receipt", size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Status: UNPAID", bold: true, size: 22, font: "Arial", color: "CC0000" })] }),
+            ]
+          }),
+        ]
+      })
+    ]
+  }),
+
+  spacer(),
+  spacer(),
+
+  // Services table
+  new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [5200, 1800, 2360],
+    rows: [
+      // Header row
+      new TableRow({
+        children: [
+          new TableCell({
+            shading: { fill: "1A3A5C", type: ShadingType.CLEAR },
+            borders, width: { size: 5200, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ children: [new TextRun({ text: "SERVICE DESCRIPTION", bold: true, size: 20, font: "Arial", color: "FFFFFF" })] })]
+          }),
+          new TableCell({
+            shading: { fill: "1A3A5C", type: ShadingType.CLEAR },
+            borders, width: { size: 1800, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "TIER", bold: true, size: 20, font: "Arial", color: "FFFFFF" })] })]
+          }),
+          new TableCell({
+            shading: { fill: "1A3A5C", type: ShadingType.CLEAR },
+            borders, width: { size: 2360, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "AMOUNT", bold: true, size: 20, font: "Arial", color: "FFFFFF" })] })]
+          }),
+        ]
+      }),
+      // Tier 1 row
+      new TableRow({
+        children: [
+          new TableCell({
+            borders, width: { size: 5200, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [
+              new Paragraph({ children: [new TextRun({ text: "Tier 1 — Introductory Consultation", bold: true, size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Foundational GIVS principles and originating architect's personal journey overview", size: 20, font: "Arial", italics: true })] }),
+            ]
+          }),
+          new TableCell({
+            borders, width: { size: 1800, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "1", size: 22, font: "Arial" })] })]
+          }),
+          new TableCell({
+            borders, width: { size: 2360, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "$___________", size: 22, font: "Arial" })] })]
+          }),
+        ]
+      }),
+      // Tier 2 row
+      new TableRow({
+        children: [
+          new TableCell({
+            borders, width: { size: 5200, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [
+              new Paragraph({ children: [new TextRun({ text: "Tier 2 — Methodology Review", bold: true, size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Detailed framework development process, philosophical and legal foundations", size: 20, font: "Arial", italics: true })] }),
+            ]
+          }),
+          new TableCell({
+            borders, width: { size: 1800, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "2", size: 22, font: "Arial" })] })]
+          }),
+          new TableCell({
+            borders, width: { size: 2360, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "$___________", size: 22, font: "Arial" })] })]
+          }),
+        ]
+      }),
+      // Tier 3 row
+      new TableRow({
+        children: [
+          new TableCell({
+            borders, width: { size: 5200, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [
+              new Paragraph({ children: [new TextRun({ text: "Tier 3 — Founding Framework Documentation Access", bold: true, size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Core GIVS founding documents under signed confidentiality agreement", size: 20, font: "Arial", italics: true })] }),
+            ]
+          }),
+          new TableCell({
+            borders, width: { size: 1800, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "3", size: 22, font: "Arial" })] })]
+          }),
+          new TableCell({
+            borders, width: { size: 2360, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "$___________", size: 22, font: "Arial" })] })]
+          }),
+        ]
+      }),
+      // Tier 4 row
+      new TableRow({
+        children: [
+          new TableCell({
+            borders, width: { size: 5200, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [
+              new Paragraph({ children: [new TextRun({ text: "Tier 4 — Licensing Discussion", bold: true, size: 22, font: "Arial" })] }),
+              new Paragraph({ children: [new TextRun({ text: "Formal licensing negotiation for implementation or replication of GIVS framework", size: 20, font: "Arial", italics: true })] }),
+            ]
+          }),
+          new TableCell({
+            borders, width: { size: 1800, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "4", size: 22, font: "Arial" })] })]
+          }),
+          new TableCell({
+            borders, width: { size: 2360, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "$___________", size: 22, font: "Arial" })] })]
+          }),
+        ]
+      }),
+      // Total row
+      new TableRow({
+        children: [
+          new TableCell({
+            shading: { fill: "F0F4F8", type: ShadingType.CLEAR },
+            borders, width: { size: 5200, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ children: [] })]
+          }),
+          new TableCell({
+            shading: { fill: "F0F4F8", type: ShadingType.CLEAR },
+            borders, width: { size: 1800, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "TOTAL DUE:", bold: true, size: 22, font: "Arial" })] })]
+          }),
+          new TableCell({
+            shading: { fill: "F0F4F8", type: ShadingType.CLEAR },
+            borders, width: { size: 2360, type: WidthType.DXA },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "$___________", bold: true, size: 22, font: "Arial" })] })]
+          }),
+        ]
+      }),
+    ]
+  }),
+
+  spacer(),
+  spacer(),
+  bold("Payment Terms"),
+  body("Payment is due in full upon receipt of this invoice. Knowledge sharing, consultation, or document delivery will not occur until payment is confirmed. Accepted payment methods will be communicated upon invoice issuance."),
+  spacer(),
+  bold("Important Notice"),
+  body("Payment of this invoice does not transfer any intellectual property rights. All GIVS materials remain the exclusive property of Beverly. This invoice is issued under the GIVS Knowledge Access Policy dated " + TODAY + "."),
+  spacer(),
+  spacer(),
+  new Paragraph({
+    spacing: { before: 240, after: 80 },
+    children: [new TextRun({ text: "Authorized by: Beverly — Founder, Global Intrinsic Value System", size: 22, font: "Arial" })]
+  }),
+  new Paragraph({
+    spacing: { before: 80, after: 80 },
+    children: [new TextRun({ text: "Signature: _______________________________     Date: _______________", size: 22, font: "Arial" })]
+  }),
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOCUMENT 4 — Standard Email Response Template + Public Access Statement
+// ─────────────────────────────────────────────────────────────────────────────
+
+const doc4children = [
+  coverTitle("GIVS"),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 160 },
+    children: [new TextRun({ text: "Global Intrinsic Value System", size: 32, color: "2E6DA4", font: "Arial" })]
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 80, after: 240 },
+    children: [new TextRun({ text: "STANDARD RESPONSE TEMPLATES &\nPUBLIC ACCESS STATEMENT", bold: true, size: 28, color: "1A3A5C", font: "Arial" })]
+  }),
+  accentLine,
+  coverLabel("Issued by: Beverly — Founder & Governance Steward"),
+  coverLabel("Effective Date: " + TODAY),
+  spacer(),
+
+  pageBreak(),
+
+  heading1("PART ONE: Standard Email Response Templates"),
+  accentLine,
+  spacer(),
+
+  heading2("Template A — Acknowledging an Access Request"),
+  thinLine,
+  body("SUBJECT: Re: GIVS Knowledge Access Request — [Requester Name]"),
+  spacer(),
+  body("Dear [Requester Name],"),
+  spacer(),
+  body("Thank you for your inquiry regarding the Global Intrinsic Value System (GIVS)."),
+  spacer(),
+  body("I have received your request and am reviewing it. Please be advised that all access to my GIVS methodology, framework development process, and related knowledge is governed by the GIVS Knowledge Access Policy. This policy requires that a formal invoice be issued and paid in full before any knowledge sharing, consultation, or document delivery occurs."),
+  spacer(),
+  body("If your request is approved, you will receive an invoice within [X] business days. Payment terms and access scope will be specified in that invoice. No further communication regarding GIVS content will occur prior to payment confirmation."),
+  spacer(),
+  body("If you have questions about this process, you may reply to this email. Please note that questions about GIVS content itself — including its methodology, conclusions, or framework — cannot be addressed prior to payment."),
+  spacer(),
+  body("Regards,"),
+  body("Beverly"),
+  body("Founder & Governance Steward"),
+  body("Global Intrinsic Value System"),
+  spacer(),
+  spacer(),
+
+  heading2("Template B — Declining an Access Request"),
+  thinLine,
+  body("SUBJECT: Re: GIVS Knowledge Access Request — [Requester Name]"),
+  spacer(),
+  body("Dear [Requester Name],"),
+  spacer(),
+  body("Thank you for your inquiry regarding the Global Intrinsic Value System (GIVS)."),
+  spacer(),
+  body("After careful review, I am not able to approve your access request at this time. I am not required to provide a reason for this decision, and I respectfully decline to do so."),
+  spacer(),
+  body("If your circumstances change and you wish to submit a new request in the future, you are welcome to do so via email. All requests are reviewed individually."),
+  spacer(),
+  body("I wish you well in your endeavors."),
+  spacer(),
+  body("Regards,"),
+  body("Beverly"),
+  body("Founder & Governance Steward"),
+  body("Global Intrinsic Value System"),
+  spacer(),
+  spacer(),
+
+  heading2("Template C — Confirming Payment and Scheduling Access"),
+  thinLine,
+  body("SUBJECT: GIVS Knowledge Access — Payment Confirmed — [Requester Name]"),
+  spacer(),
+  body("Dear [Requester Name],"),
+  spacer(),
+  body("Your payment for Invoice #GIVS-__________ has been confirmed. Thank you."),
+  spacer(),
+  body("In accordance with the GIVS Knowledge Access Policy, I am now prepared to schedule your [Tier 1 / Tier 2 / Tier 3 / Tier 4] access. Please reply with your availability for the following dates and times:"),
+  spacer(),
+  indent("[Date/Time Option 1]"),
+  indent("[Date/Time Option 2]"),
+  indent("[Date/Time Option 3]"),
+  spacer(),
+  body("Please note that the knowledge shared in our session remains confidential and subject to all terms of the GIVS Knowledge Access Policy. No recording, transcription, or distribution is permitted without my prior written consent."),
+  spacer(),
+  body("I look forward to connecting with you."),
+  spacer(),
+  body("Regards,"),
+  body("Beverly"),
+  body("Founder & Governance Steward"),
+  body("Global Intrinsic Value System"),
+  spacer(),
+
+  pageBreak(),
+
+  heading1("PART TWO: Public-Facing Access Statement"),
+  accentLine,
+  body("The following statement may be attached to any GIVS document shared externally or posted publicly wherever GIVS is referenced."),
+  spacer(),
+  thinLine,
+  spacer(),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 120, after: 80 },
+    children: [new TextRun({ text: "OFFICIAL NOTICE REGARDING ACCESS TO GIVS KNOWLEDGE", bold: true, size: 24, color: "1A3A5C", font: "Arial" })]
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 40, after: 160 },
+    children: [new TextRun({ text: "Global Intrinsic Value System | Developed 2020–Present", size: 20, color: "666666", font: "Arial", italics: true })]
+  }),
+  body("The Global Intrinsic Value System (GIVS) is the proprietary intellectual property of its founding architect, Beverly. GIVS represents six years of original framework development, personal documented experience, and original conclusions regarding personal intrinsic time value, personal intrinsic data value, and citizen sovereignty in the digital age."),
+  spacer(),
+  body("All inquiries regarding Beverly's GIVS methodology, framework conclusions, development process, or related knowledge must be submitted via email to her official designated address. Verbal requests, social media inquiries, and third-party communications will not be honored."),
+  spacer(),
+  body("Upon submission of a valid request, Beverly will review it at her sole discretion. Approved requests will receive a formal invoice. Knowledge sharing occurs only after invoice payment is confirmed in full."),
+  spacer(),
+  body("Beverly's name, voice, likeness, and personal story are protected under applicable intellectual property and right of publicity law. No person, platform, institution, or technology system may use any representation of Beverly or her work for any commercial or public purpose without prior written consent and compensation."),
+  spacer(),
+  body("GIVS exists alongside — and in full support of — existing U.S. government citizen support systems. It is an additive personal sovereignty framework, not a replacement for existing protections."),
+  spacer(),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 120, after: 120 },
+    children: [new TextRun({ text: "© 2020–" + YEAR + " Beverly. Global Intrinsic Value System. All Rights Reserved.", bold: true, size: 20, font: "Arial", color: "1A3A5C" })]
+  }),
+  thinLine,
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD ALL FOUR DOCUMENTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+const numbering = {
+  config: [
+    {
+      reference: "bullets",
+      levels: [{
+        level: 0, format: LevelFormat.BULLET, text: "\u2022",
+        alignment: AlignmentType.LEFT,
+        style: { paragraph: { indent: { left: 720, hanging: 360 } } }
+      }]
+    }
+  ]
+};
+
+const pageProps = {
+  size: { width: 12240, height: 15840 },
+  margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+};
+
+const styles = {
+  default: { document: { run: { font: "Arial", size: 22 } } },
+  paragraphStyles: [
+    { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
+      run: { size: 32, bold: true, font: "Arial", color: "1A3A5C" },
+      paragraph: { spacing: { before: 320, after: 160 }, outlineLevel: 0 } },
+    { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
+      run: { size: 26, bold: true, font: "Arial", color: "2E6DA4" },
+      paragraph: { spacing: { before: 240, after: 120 }, outlineLevel: 1 } },
+  ]
+};
+
+const docs = [
+  { name: "GIVS_IP_Protection_Notice.docx", children: doc1children },
+  { name: "GIVS_Knowledge_Access_Policy.docx", children: doc2children },
+  { name: "GIVS_Invoice_Template.docx", children: doc3children },
+  { name: "GIVS_Email_Templates_and_Public_Statement.docx", children: doc4children },
+];
+
+(async () => {
+  for (const d of docs) {
+    const doc = new Document({
+      styles,
+      numbering,
+      sections: [{
+        properties: { page: pageProps },
+        children: d.children
+      }]
+    });
+    const buffer = await Packer.toBuffer(doc);
+    fs.writeFileSync(`/mnt/user-data/outputs/${d.name}`, buffer);
+    console.log(`Created: ${d.name}`);
+  }
+})();
